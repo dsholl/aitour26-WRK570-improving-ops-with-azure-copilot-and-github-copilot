@@ -45,26 +45,33 @@ ERROR CODE: InvalidTemplateDeployment
 
 There are currently overrides for the few restrictions that have been found during the course development, but if a user has a problem, they can add an override using the availability zones mentioned in the error response.
 
+In their instructions, they will have a command line that looks like:
+
 ```powershell
-$Overrides = @{
-  "eastus2" = @{"zones" = ("2", "3")}
-  "westus2" = @{"zones" = @("3")}
-  "eastus" = @{"zones" = ("2", "1")}
-  # Replace REGION with the problem region in the sample below, adjusting to the the valid zones mentioned in the error message.
-  # then, uncomment and paste this section into the terminal
-  # "REGION" = @{"zones" = ("3", "2", "1")}
-}
+./scripts/Set-AzdEnvironment.ps1 -ResourceGroupName <Their resource group name> -Location <region they are deploying to>
 ```
 
-Then, replace REGION with your region in the snippet below and run the below commands.
+Using the information from the error, they can add a parameter `-AvailabilityZones` with the zones mentioned in the error. An example using the error details above would look like
 
 ```powershell
-$zones = $Overrides['REGION'].zones -join ', '
-azd env set AKS_AVAILABILITY_ZONES $zones
+./scripts/Set-AzdEnvironment.ps1 -ResourceGroupName <RESOURCE_GROUP_NAME> -Location eastus2 -AvailabilityZones 3, 2
+```
 
-# retry the deployment
+Then, they can attempt the deployment again.
+
+```powershell
 azd up
 ```
+
+## Copilot Fails to Answer
+
+If the user gets a message similar to:
+
+> An error occurred while processing your prompt. Please try again.
+
+They can retry the prompt or in the case of continued failures, create a new chat (looks like a speech bubble with a plus sign in it at the top of the Copilot pane).
+
+If they still get an error, refresh the browser window and try again. 
 
 ---
 

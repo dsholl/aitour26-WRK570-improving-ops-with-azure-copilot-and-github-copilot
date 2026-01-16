@@ -90,17 +90,10 @@ When prompted to select a subscription and tenant, select the subscription you'd
 
 ### Step 3: Register Azure Resource Providers
 
-Execute the following commands to enable required services:
+Execute the following command to enable required services:
 
 ```PowerShell-notab-nocolor
-az provider register --namespace Microsoft.ContainerService
-az provider register --namespace Microsoft.KeyVault
-az provider register --namespace Microsoft.CognitiveServices
-az provider register --namespace Microsoft.ServiceBus
-az provider register --namespace Microsoft.DocumentDB
-az provider register --namespace Microsoft.OperationalInsights
-az provider register --namespace Microsoft.AlertsManagement
-az provider register --namespace Microsoft.AzureTerraform
+./scripts/Register-AzureProvider.ps1
 ```
 
 ### Step 4: Configure Deployment Environment
@@ -119,32 +112,8 @@ azd config set alpha.aks.helm on
 
 #### Set Environment Variables
 
-There are some common overrides based on current Azure demand - if you get an error deploying, add an override based on the error from the deployment (the error will list the valid availability zones).
-
 ```PowerShell-notab-nocolor
-$Overrides = @{
-  "eastus2" = @{"zones" = ("2", "3")}
-  "westus2" = @{"zones" = @("3")}
-  "eastus" = @{"zones" = ("2", "1")}
-}
-
-azd env set AZURE_RESOURCE_GROUP "<AZURE_RESOURCE_GROUP_NAME>"
-azd env set COMPANY_NAME "Zava"
-azd env set AZURE_LOCATION "<AZURE_LOCATION>"
-azd env set AKS_NODE_POOL_VM_SIZE "Standard_D2_v4"
-azd env set DEPLOY_AZURE_CONTAINER_REGISTRY "false"
-azd env set DEPLOY_AZURE_OPENAI "true"
-azd env set AZURE_OPENAI_LOCATION "swedencentral"
-azd env set DEPLOY_AZURE_OPENAI_DALL_E_MODEL "false"
-azd env set DEPLOY_AZURE_SERVICE_BUS "true"
-azd env set DEPLOY_AZURE_COSMOSDB "true"
-azd env set AZURE_COSMOSDB_ACCOUNT_KIND "MongoDB"
-azd env set DEPLOY_OBSERVABILITY_TOOLS "false"
-azd env set SOURCE_REGISTRY "ghcr.io/usepowershell"
-if ($Overrides.Keys -contains '<AZURE_LOCATION>') {
-    $zones = $Overrides['<AZURE_LOCATION>'].zones -join ', '
-    azd env set AKS_AVAILABILITY_ZONES $zones
-}
+./scripts/Set-AzdEnvironment.ps1 -ResourceGroupName "<AZURE_RESOURCE_GROUP_NAME>" -Location "<AZURE_LOCATION>"
 ```
 
 ### Step 5: Deploy Application
@@ -180,7 +149,7 @@ Look for these values:
 2. Browse the site and click on 2-3 products
 3. Verify the site loads correctly
 
-### Step 8: Test AI Features
+### Step 8: Test AI Features in the Store Admin
 
 1. Ctrl+click the store-admin URL
 2. Navigate to **Products** → **Add Product**
@@ -209,6 +178,8 @@ The objective here is to start to build an awareness of the resources under our 
 #### Access Your Resource Group
 
 Navigate to <AZURE_RESOURCE_GROUP_NAME> in the browser.
+
+If you don't have the portal open or want to go directly to the resource group, type the following URL in the browser bar.
 
 ```PowerShell-notab-nocolor
 https://portal.azure.com/#@<AZURE_TENANT_NAME>/resource/subscriptions/<AZURE_SUBSCRIPTION_ID>/resourceGroups/<AZURE_RESOURCE_GROUP_NAME>/overview
@@ -251,6 +222,8 @@ Are there any service alerts impacting this resource group?
 
 #### Check AKS Health (Initial)
 
+Some prompts need more context to return effective results. Try this prompt from the resource group pane, then in the next exercise, you'll try it from the AKS resource pane directly.
+
 **Prompt:**
 
 ```text-nocolor-notab
@@ -267,7 +240,9 @@ Here you'll see how changing the context for Azure Copilot enables specific capa
 
 #### Navigate to AKS Resource
 
-Go to the AKS Cluster.
+Go to the AKS Cluster in the portal.
+
+You can also use the below in the browser bar to directly go to that resoure.
 
 ```PowerShell-notab-nocolor
 https://portal.azure.com/#@<AZURE_TENANT_NAME>/resource/subscriptions/<AZURE_SUBSCRIPTION_ID>/resourceGroups/<AZURE_RESOURCE_GROUP_NAME>/providers/Microsoft.ContainerService/managedClusters/<AZURE_AKS_CLUSTER_NAME>/overview
@@ -338,6 +313,8 @@ Your objective in this activity is to start building a library of queries and co
 
 Go to the AKS Cluster.
 
+You can also use the below in the browser bar to directly go to that resoure.
+
 ```PowerShell-notab-nocolor
 https://portal.azure.com/#@<AZURE_TENANT_NAME>/resource/subscriptions/<AZURE_SUBSCRIPTION_ID>/resourceGroups/<AZURE_RESOURCE_GROUP_NAME>/providers/Microsoft.ContainerService/managedClusters/<AZURE_AKS_CLUSTER_NAME>/overview
 ```
@@ -375,6 +352,8 @@ Show me the logs for the store-admin deployment in the pets namespace
 ```
 
 **Expected result:** Instructions to get pod name first, then view logs.
+
+Cancel the current prompt.
 
 **Follow-up prompt:**
 
@@ -416,7 +395,7 @@ What is the purpose of a liveness probe in Kubernetes?
 
 #### Return to Resource Group
 
-Navigate back to the Resource Group Overview
+Navigate back to the Resource Group Overview.
 
 ```PowerShell-notab-nocolor
 https://portal.azure.com/#@<AZURE_TENANT_NAME>/resource/subscriptions/<AZURE_SUBSCRIPTION_ID>/resourceGroups/<AZURE_RESOURCE_GROUP_NAME>/overview
@@ -438,10 +417,10 @@ Which Azure resources in my environment are not zone-redundant?
 
 #### Return to AKS Resource
 
-Go back to the AKS Cluster
+Go back to the AKS Cluster.
 
 ```PowerShell-notab-nocolor
-https://portal.azure.com/#@<AZURE_TENANT_NAME>/resource/subscriptions/<AZURE_SUBSCRIPTION_ID>/resourceGroups/<AZURE_RESOURCE_GROUP_NAME>/providers/Microsoft.ContainerService/managedClusters/<AZURE_AKS_CLUSTER_NAME>/overview
+https://portal.azure.com/#@<AZURE_TENANT_NAME>/resource//subscriptions/<AZURE_SUBSCRIPTION_ID>/resourceGroups/<AZURE_RESOURCE_GROUP_NAME>/providers/Microsoft.ContainerService/managedClusters/<AZURE_AKS_CLUSTER_NAME>/overview
 ```
 
 #### Get Resilience Recommendations
@@ -496,7 +475,7 @@ How would I do that in Terraform?
 
 #### Return to Resource Group
 
-Navigate to the Resource Group Overview
+Navigate to the Resource Group Overview.
 
 ```PowerShell-notab-nocolor
 https://portal.azure.com/#@<AZURE_TENANT_NAME>/resource/subscriptions/<AZURE_SUBSCRIPTION_ID>/resourceGroups/<AZURE_RESOURCE_GROUP_NAME>/overview
@@ -569,7 +548,7 @@ If you don't have a GitHub account:
 
 #### Fork the AKS Store Demo Project
 
-1. In the browser, navigate to [the workshop repository](https://github.com/microsoft/aitour26-WRK570-improving-ops-with-copilot-in-azure-and-github-copilot)
+1. In the browser, navigate to [the workshop repository](https://github.com/microsoft/aitour26-WRK570-improving-ops-with-copilot-in-azure-and-github-copilot) +++https://github.com/microsoft/aitour26-WRK570-improving-ops-with-copilot-in-azure-and-github-copilot+++
 2. Click fork to create your own copy of the repository
 
 #### Open Visual Studio Code
@@ -940,7 +919,7 @@ Add the Terraform MCP server to GitHub Copilot's configuration:
 4. Add the image name.
 
 ```PowerShell-notab-nocolor
-hashicorp/terraform-mcp-server:0.3.0
+hashicorp/terraform-mcp-server
 ```
 
 5. Choose "Allow" for the required permissions.
