@@ -258,6 +258,7 @@ https://portal.azure.com/#@@lab.CloudSubscription.TenantName/resource/subscripti
 ```text-nocolor-notab
 What is the current health status of my AKS cluster?
 ```
+> [!NOTE] **Action:** When asked to select a time range, choose "Last 24 hours" from the dropdown menu.
 
 **Expected result:** Health report showing passed checks for:
 
@@ -746,7 +747,7 @@ npx @playwright/mcp@latest
 Open GitHub Copilot Chat and use the enhanced Playwright capabilities:
 
 ```text-notab-nocolor
-@playwright Create comprehensive smoke tests for an e-commerce store front at [SERVICE_STORE_FRONT_ENDPOINT_URL]. Include tests for:
+#playwright Create comprehensive smoke tests for an e-commerce store front at [SERVICE_STORE_FRONT_ENDPOINT_URL]. Include tests for:
 - Homepage loading and basic navigation
 - Product catalog browsing
 - Product detail page functionality
@@ -760,7 +761,7 @@ Open GitHub Copilot Chat and use the enhanced Playwright capabilities:
 Prompt GitHub Copilot Chat:
 
 ```text-notab-nocolor
-@playwright Create smoke tests for store admin panel at [SERVICE_STORE_ADMIN_ENDPOINT_URL]. Test:
+#playwright Create smoke tests for store admin panel at [SERVICE_STORE_ADMIN_ENDPOINT_URL]. Test:
 - Admin login page and authentication
 - Product management dashboard
 - Add new product functionality
