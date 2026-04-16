@@ -1,1 +1,14 @@
+.git
+.gitignore
+.dockerignore
+Dockerfile
+__pycache__
+*.pyc
+*.pyo
+*.egg-info
 .env
+.venv
+*.md
+*.http
+tests/
+.pytest_cache/
