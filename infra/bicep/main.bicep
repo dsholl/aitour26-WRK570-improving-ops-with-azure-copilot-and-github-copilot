@@ -38,10 +38,10 @@ param deployAzureOpenAI bool = true
 param azureOpenAILocation string = location
 
 @description('value of azure openai model name')
-param chatCompletionModelName string = 'gpt-4o-mini'
+param chatCompletionModelName string = 'gpt-4.1-mini'
 
 @description('value of azure openai model version')
-param chatCompletionModelVersion string = '2024-07-18'
+param chatCompletionModelVersion string = '2025-04-14'
 
 @description('value of azure openai model capacity')
 param chatCompletionModelCapacity int = 8
@@ -82,7 +82,7 @@ var isNodeSkuOverrideEmpty = isOverrideEmpty ? true : !contains(aksNodePoolOverr
 var nodeSku = isNodeSkuOverrideEmpty ? aksNodePoolVMSize : aksNodePoolOverrideObject[location].sku
 var isNodeZonesOverrideEmpty = isOverrideEmpty ? true : !contains(aksNodePoolOverrideObject[location], 'zones')
 var overrideZones = !isNodeZonesOverrideEmpty ? map(aksNodePoolOverrideObject[location].zones, item => int(trim(item))) : []
-var zones = isNodeZonesOverrideEmpty ? map(split(aksAvailabilityZones, ','), item => int(trim(item))) : overrideZones
+var zones = isNodeZonesOverrideEmpty ? (empty(aksAvailabilityZones) ? [] : map(split(aksAvailabilityZones, ','), item => int(trim(item)))) : overrideZones
 
 
 module aks 'kubernetes.bicep' = {
